@@ -2,16 +2,18 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       namespace :user do
-        post "sign_in", to: "sessions#sign_in"
-        delete "sign_out", to: "sessions#sign_out"
-        get "me", to: "sessions#me"
+        post "sign_in", to: "users#sign_in"
+        post "sign_up", to: "users#sign_up"
+        delete "sign_out", to: "users#sign_out"
+        get "manage_user", to: "users#manage_user"
+        devise_for :users
 
-        resources :categories
         resources :fictions
+        resources :categories
         resources :reviews
       end
     end
   end
-  # devise_for :users
+  
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

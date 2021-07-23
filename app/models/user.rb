@@ -39,35 +39,40 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :validatable
+          :recoverable, :rememberable, :validatable, :confirmable
 
+  before_validation :generate_auth_token, on: [:create]
+  
   has_many :reviews, dependent: :destroy
   has_many :fictions, dependent: :destroy
 
-  before_create :generate_auth_token
+  
 
-  def generate_auth_token
-    self.auth_token = SecureRandom.uuid
+  def generate_auth_token(force = false)
+    self.auth_token ||= SecureRandom.urlsafe_base64
+
+    self.auth_token = SecureRandom.urlsafe_base64 if force
   end
 
-  def jwt(exp=10.days.from_now)
-    JWT.encode({ auth_token: self.auth_token, exp: exp.to_i }, Rails.application.secret_key_base, "HS256")
+  def jwt(exp = 3.days.from_now)
+    payload = { exp: exp.to_i, auth_token: self.auth_token }
+    JWT.encode payload, Rails.application.secret_key_base, 'HS256'
   end
 
-  def as_json_with_jwt
-    json = {}
-    json[:email] = self.email
-    json[:username] = self.username
-    json[:auth_jwt] = self.jwt
-    json
-  end
+  # def as_json_with_jwt
+  #   json = {}
+  #   json[:email] = self.email
+  #   json[:username] = self.username
+  #   json[:auth_jwt] = self.jwt
+  #   json
+  # end
 
-  def as_profile_json
-    json = {}
-    json[:email] = self.email
-    json[:username] = self.username
-    json[:bio] = self.bio
-    json[:image_url] = self.image_url
-    json
-  end
+  # def as_profile_json
+  #   json = {}
+  #   json[:email] = self.email
+  #   json[:username] = self.username
+  #   json[:bio] = self.bio
+  #   json[:image_url] = self.image_url
+  #   json
+  # end
 end

@@ -5,3 +5,52 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+User.destroy_all
+Category.destroy_all
+Fiction.destroy_all
+Review.destroy_all
+
+
+users = User.create!([
+    {
+        email: 'test@test.com',
+        username: 'test01',
+        password: '000000',
+        bio: "I'm Tester"
+    },
+    {
+        email: 'aeka@email.com',
+        username: 'test02',
+        password: '000000',
+        bio: "I'm Tester"
+    }
+])
+
+categories = Category.create!([
+    {
+        name: "Fantasy"
+    },
+    {
+        name: "Epic"
+    }
+])
+
+(1..20).to_a.each do |i|
+    Fiction.create!([
+        name: "Name #{i}",
+        description: "Ok Bro",
+        article: "Ep #{i}",
+        image_url: "https://images.unsplash.com/photo-1432958576632-8a39f6b97dc7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1052&q=80",
+        user_id: User.first.id,
+        category_id: Category.first.id
+    ])
+end
+
+reviews = Review.create!([
+    title: "Hello Title",
+    description: "Not Bad",
+    score: "4",
+    user_id: User.second.id,
+    fiction_id: Fiction.first.id
+])

@@ -1,15 +1,32 @@
 class Api::AppController < ApplicationController
-    rescue_from AKError, with: :handle_400
-    rescue_from AKAuthenticationError, with: :handle_401
-    rescue_from JWT::VerificationError, with: :handle_401
-    rescue_from JWT::ExpiredSignature, with: :handle_401
-    rescue_from JWT::DecodeError, with: :handle_401
 
-    def handle_400(exception)
-        render json: { success: false, error: exception.message }, status: :bad_request and return
+rescue_from AKAuthenticationError, with: :rescue_unauthorized
+rescue_from JWT::DecodeError, with: :rescue_unauthorized
+rescue_from JWT::ExpiredSignature, with: :rescue_unauthorized
+rescue_from JWT::ImmatureSignature, with: :rescue_unauthorized
+rescue_from JWT::InvalidIssuerError, with: :rescue_unauthorized
+rescue_from JWT::InvalidIatError, with: :rescue_unauthorized
+rescue_from JWT::VerificationError, with: :rescue_unauthorized
+    
+    def set_current_user_from_jwt
+        auth_header = request.headers["Authorization"]
+    raise AKAuthenticationError.new("No token") if auth_header.blank?
+        bearer = auth_header.split.first
+    raise AKAuthenticationError.new("Bad format") if bearer != "Bearer"
+        jwt = auth_header.split.last
+    raise AKAuthenticationError.new("Bad format") if jwt.blank?
+        key = Rails.application.secret_key_base
+        decoded = JWT.decode(jwt, key, 'HS256')
+        payload = decoded.first
+    if payload.blank? || payload["auth_token"].blank?
+        raise AKAuthenticationError.new("Bad token")
     end
-
-    def handle_401(exception)
-        render json: { success: false, error: exception.message }, status: :bad_request and return
+        @current_user = User.find_by_auth_token(payload["auth_token"])
+    raise AKAuthenticationError.new("Bad token") if @current_user.blank?
+    end
+        
+    private
+        def rescue_unauthorized(err)
+        render json: {success: false, error: err}, status: :unauthorized
     end
 end
