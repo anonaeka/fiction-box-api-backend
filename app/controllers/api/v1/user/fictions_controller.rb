@@ -1,5 +1,5 @@
 class Api::V1::User::FictionsController < Api::AppController
-    before_action :set_fiction, only: [ :update, :destroy]
+    before_action :set_fiction, only: [ :show, :update, :destroy]
     before_action :set_current_user_from_jwt, only: [:create, :update, :destroy]
 
     def index
@@ -8,7 +8,7 @@ class Api::V1::User::FictionsController < Api::AppController
     end
 
     def show
-        render json: Fiction.find(params[:id]), 
+        render json: @fiction, 
         include: [{ user: { only: :username } }, category: { only: :name }]
     end
 

@@ -52,7 +52,7 @@ class Api::V1::User::UsersController < Api::AppController
   end
 
   def user_update
-    params.require(:user).permit(:email, :password, :bio)
+    params.require(:user).permit(:email, :username, :password, :bio)
   end
 end
 

@@ -15,11 +15,12 @@ class Api::V1::User::ReviewsController < Api::AppController
 
     def create
         @review = Review.new(review_params)
-        if @review.save
-            render json: @review, status: :created
-        else
-            render json: { errors: @review.errors }, status: :unprocessable_entity
-        end
+        @review.user_id = @current_user.id
+    if  @review.save
+        render json: @review.as_json
+    else
+        render json: @review.errors, status: :unprocessable_entity
+    end
     end
 
     def update
