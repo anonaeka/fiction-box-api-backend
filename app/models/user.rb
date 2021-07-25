@@ -42,16 +42,23 @@ class User < ApplicationRecord
           :recoverable, :rememberable, :validatable
 
   before_validation :generate_auth_token, on: [:create]
+  before_validation :downcase_email, on: [:create, :manage_user_update]
+  validates :username, presence: true, uniqueness: true, length: { minimum: 6 }
+  validates :email, presence: true, uniqueness: true
+
   
   has_many :reviews, dependent: :destroy
   has_many :fictions, dependent: :destroy
-
   
 
   def generate_auth_token(force = false)
     self.auth_token ||= SecureRandom.urlsafe_base64
 
     self.auth_token = SecureRandom.urlsafe_base64 if force
+  end
+
+  def downcase_email
+    self.email = self.email&.downcase
   end
 
   def jwt(exp = 3.days.from_now)

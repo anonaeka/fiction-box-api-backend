@@ -23,7 +23,7 @@ class Api::V1::User::FictionsController < Api::AppController
     end
 
     def update
-        if@fiction.update(params_for_fiction)
+        if @fiction.update(params_for_fiction)
         render json: @fiction.as_json
         else
         render json: @fiction.errors, status: :unprocessable_entity

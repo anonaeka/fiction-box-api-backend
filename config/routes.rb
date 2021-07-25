@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         get "manage_user", to: "users#manage_user"
         patch "manage_user", to: "users#manage_user_update"
         put "manage_user", to: "users#manage_user_update"
+        
         devise_for :users
 
         resources :fictions
