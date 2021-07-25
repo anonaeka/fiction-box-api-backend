@@ -1,5 +1,4 @@
-class Api::V1::User::CategoreisController < Api::AppController
-    # before_action :authenticate
+class Api::V1::User::CategoriesController < Api::AppController
     before_action :set_category, except: [:index, :create]
 
     def index
@@ -7,12 +6,12 @@ class Api::V1::User::CategoreisController < Api::AppController
     end
 
     def show
-        render json: @category
+        render json: @category, include: [:fictions]
     end
 
     def create
         category = Category.new(category_params)
-        if @category.save
+        if category.save
             render json: category, status: :created
         else
             render json: category.errors, status: :unprocessable_entity

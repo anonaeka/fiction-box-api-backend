@@ -1,11 +1,11 @@
 class Api::V1::User::ReviewsController < Api::AppController
     before_action :set_review, only: [:show, :update, :destroy]
-    before_action :authenticate, only: [:create, :update, :destroy]
-
+    before_action :set_current_user_from_jwt, only: [:create, :update, :destroy]
 
     def index
-        render json: Review.order(created_at: :desc),
-        include: [{ user: { only: :username } }, fiction: { only: :name }]
+        # render json: Review.order(created_at: :desc),
+        # include: [{ user: { only: :username } }, fiction: { only: :name }]
+        render status: :not_implemented
     end
 
     def show

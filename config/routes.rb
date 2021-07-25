@@ -6,6 +6,8 @@ Rails.application.routes.draw do
         post "sign_up", to: "users#sign_up"
         delete "sign_out", to: "users#sign_out"
         get "manage_user", to: "users#manage_user"
+        patch "manage_user", to: "users#manage_user_update"
+        put "manage_user", to: "users#manage_user_update"
         devise_for :users
 
         resources :fictions
