@@ -1,11 +1,17 @@
 class Api::V1::User::FictionsController < Api::AppController
     before_action :set_fiction, only: [ :show, :update, :destroy]
-    before_action :set_current_user_from_jwt, only: [:create, :update, :destroy]
+    before_action :set_current_user_from_jwt, only: [:manage_user, :create, :update, :destroy]
     before_action :control_fiction, only: [:update, :destroy]
     
 
     def index
         render json: Fiction.order(created_at: :desc), 
+        include: [{ user: { only: :username } }, category: { only: :name }]
+    end
+
+    def manage_fiction
+        @fictionuser = Fiction.where(user_id: @current_user)
+        render json: @fictionuser.as_json, 
         include: [{ user: { only: :username } }, category: { only: :name }]
     end
 
