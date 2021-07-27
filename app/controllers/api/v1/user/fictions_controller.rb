@@ -1,6 +1,8 @@
 class Api::V1::User::FictionsController < Api::AppController
     before_action :set_fiction, only: [ :show, :update, :destroy]
     before_action :set_current_user_from_jwt, only: [:create, :update, :destroy]
+    before_action :control_fiction, only: [:update, :destroy]
+    
 
     def index
         render json: Fiction.order(created_at: :desc), 
@@ -23,18 +25,18 @@ class Api::V1::User::FictionsController < Api::AppController
     end
 
     def update
-        if @fiction.update(params_for_fiction)
-        render json: @fiction.as_json
+        if @fictions.update(params_for_fiction)
+        render json: @fictions.as_json
         else
-        render json: @fiction.errors, status: :unprocessable_entity
+        render json: @fictions.errors, status: :unprocessable_entity
     end
     end
 
     def destroy
-        if @fiction.destroy
+        if @fictions.destroy
             render status: :no_content
         else
-            render json: { errors: @fiction.errors }, status: :unprocessable_entity
+            render json: { errors: @fictions.errors }, status: :unprocessable_entity
         end
     end
 
@@ -44,8 +46,12 @@ private
         @fiction =  Fiction.find(params[:id])
     end
 
+    def control_fiction
+        @fictions = @current_user.fictions.find(params[:id])
+    end
+
     def params_for_fiction
-        params.require(:fiction).permit(:name, :description, :article, :user_id, :category_id)
+        params.require(:fiction).permit(:name, :description, :article, :user_id, :category_id, :image_url)
     end
 
 end

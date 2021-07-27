@@ -1,12 +1,14 @@
 class Api::AppController < ApplicationController
 
 rescue_from AKAuthenticationError, with: :rescue_unauthorized
+rescue_from AKError, with: :rescue_unauthorized
 rescue_from JWT::DecodeError, with: :rescue_unauthorized
 rescue_from JWT::ExpiredSignature, with: :rescue_unauthorized
 rescue_from JWT::ImmatureSignature, with: :rescue_unauthorized
 rescue_from JWT::InvalidIssuerError, with: :rescue_unauthorized
 rescue_from JWT::InvalidIatError, with: :rescue_unauthorized
 rescue_from JWT::VerificationError, with: :rescue_unauthorized
+rescue_from ActiveRecord::RecordNotFound, with: :rescue_unauthorized
     
     def set_current_user_from_jwt
         auth_header = request.headers["Authorization"]
@@ -26,7 +28,7 @@ rescue_from JWT::VerificationError, with: :rescue_unauthorized
     end
         
     private
-        def rescue_unauthorized(err)
+    def rescue_unauthorized(err)
         render json: {success: false, error: err}, status: :unauthorized
     end
 end

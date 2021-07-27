@@ -1,6 +1,7 @@
 class Api::V1::User::ReviewsController < Api::AppController
     before_action :set_review, only: [:show, :update, :destroy]
     before_action :set_current_user_from_jwt, only: [:create, :update, :destroy]
+    before_action :control_reviews, only: [:update, :destroy]
 
     def index
         # render json: Review.order(created_at: :desc),
@@ -24,18 +25,18 @@ class Api::V1::User::ReviewsController < Api::AppController
     end
 
     def update
-        if @review.update(review_params)
-            render json: @review
+        if @reviews.update(review_params)
+            render json: @reviews
         else
-            render json: { errors: @review.errors }, status: :unprocessable_entity
+            render json: { errors: @reviews.errors }, status: :unprocessable_entity
         end
     end
     
     def destroy
-        if @review.destroy
+        if @reviews.destroy
             render status: :no_content
         else
-            render json: { errors: @review.errors }, status: :unprocessable_entity
+            render json: { errors: @reviews.errors }, status: :unprocessable_entity
         end
     end
 
@@ -43,6 +44,10 @@ class Api::V1::User::ReviewsController < Api::AppController
 
     def set_review
         @review = Review.find(params[:id])
+    end
+
+    def control_reviews
+        @reviews = @current_user.review.find(params[:id])
     end
 
     def review_params
