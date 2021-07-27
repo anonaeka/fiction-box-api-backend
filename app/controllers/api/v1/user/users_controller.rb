@@ -1,5 +1,5 @@
-class Api::V1::User::UsersController < Api::AppController
-  before_action :set_current_user_from_jwt, only: [ :manage_user , :manage_user_update, :sign_out]
+class Api::V1::User::UsersController < Api::V1::User::HeaderController
+  before_action :set_current_user_from_header, only: [ :manage_user , :manage_user_update, :sign_out]
   before_action :user_update, only: [:manage_user_update]
   before_action :set_user, only: [:manage_user_update]
   
@@ -14,10 +14,11 @@ class Api::V1::User::UsersController < Api::AppController
 
   def sign_in
     user = User.find_by_email(params[:user][:email])
+    raise AKError.new("Invalid email") if user.blank?
     if user.valid_password?(params[:user][:password])
       render json: {success: true, username: user.username, jwt: user.jwt(3.days.from_now)}, status: :created
     else
-      render json: {success: false}, status: :unauthorized
+      raise AKAuthenticationError.new("Invalid email or password")
     end
   end
 
@@ -32,16 +33,15 @@ class Api::V1::User::UsersController < Api::AppController
   end
 
   def get_user
-    @current_user
-    render json: { success: true, user: @current_user.as_json }
+    render json: { success: true, user: @current_user.as_profile_json }
   end
 
 
   def manage_user_update
     if @user.update(user_update)
-      render json: { success: true, user: @current_user.as_json }
+      render json: @user.as_json
       else
-      render json: { errors: @user.errors }, status: :unprocessable_entity
+      render json: @user.errors, status: :unprocessable_entity
   end
   end
 

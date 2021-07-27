@@ -1,6 +1,6 @@
-class Api::V1::User::ReviewsController < Api::AppController
+class Api::V1::User::ReviewsController < Api::V1::User::HeaderController
     before_action :set_review, only: [:show, :update, :destroy]
-    before_action :set_current_user_from_jwt, only: [:create, :update, :destroy]
+    before_action :set_current_user_from_header, only: [:create, :update, :destroy]
     before_action :control_reviews, only: [:update, :destroy]
 
     def index
@@ -47,11 +47,12 @@ class Api::V1::User::ReviewsController < Api::AppController
     end
 
     def control_reviews
-        @reviews = @current_user.review.find(params[:id])
+        @reviews = @current_user.reviews.find(params[:id])
     end
 
     def review_params
         params.require(:review).permit(:user_id, :fiction_id, :title, :description , :score)
     end
+
 
 end

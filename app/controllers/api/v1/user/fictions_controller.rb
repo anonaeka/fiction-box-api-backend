@@ -1,6 +1,6 @@
-class Api::V1::User::FictionsController < Api::AppController
+class Api::V1::User::FictionsController < Api::V1::User::HeaderController
     before_action :set_fiction, only: [ :show, :update, :destroy]
-    before_action :set_current_user_from_jwt, only: [:manage_user, :create, :update, :destroy]
+    before_action :set_current_user_from_header, only: [:manage_fiction, :create, :update, :destroy]
     before_action :control_fiction, only: [:update, :destroy]
     
 

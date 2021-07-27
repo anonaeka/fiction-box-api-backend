@@ -49,7 +49,6 @@ class User < ApplicationRecord
   
   has_many :reviews, dependent: :destroy
   has_many :fictions, dependent: :destroy
-  
 
   def generate_auth_token(force = false)
     self.auth_token ||= SecureRandom.urlsafe_base64
@@ -57,13 +56,27 @@ class User < ApplicationRecord
     self.auth_token = SecureRandom.urlsafe_base64 if force
   end
 
-  def downcase_email
-    self.email = self.email&.downcase
-  end
-
   def jwt(exp = 3.days.from_now)
     payload = { exp: exp.to_i, auth_token: self.auth_token }
     JWT.encode payload, Rails.application.secret_key_base, 'HS256'
+  end
+
+  def as_json_with_jwt
+    json = {}
+    json[:email] = self.email
+    json[:username] = self.username
+    json[:jwt] = self.jwt
+    json
+  end
+
+  def as_profile_json
+    json = {}
+    json[:username] = self.username
+    json
+  end
+
+  def downcase_email
+    self.email = self.email&.downcase
   end
 
 end

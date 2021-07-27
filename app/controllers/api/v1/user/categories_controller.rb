@@ -1,5 +1,6 @@
-class Api::V1::User::CategoriesController < Api::AppController
+class Api::V1::User::CategoriesController < Api::V1::User::HeaderController
     before_action :set_category, except: [:index, :create]
+    before_action :set_current_user_from_header, only: [:create, :update, :destroy]
 
     def index
         render json: Category.order(created_at: :desc)
