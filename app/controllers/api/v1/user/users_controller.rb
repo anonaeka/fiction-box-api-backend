@@ -1,5 +1,5 @@
 class Api::V1::User::UsersController < Api::V1::User::HeaderController
-  before_action :set_current_user_from_header, only: [ :manage_user , :manage_user_update, :sign_out]
+  before_action :set_current_user_from_header, only: [ :get_user, :manage_user , :manage_user_update, :sign_out]
   before_action :user_update, only: [:manage_user_update]
   before_action :set_user, only: [:manage_user_update]
   
@@ -23,13 +23,10 @@ class Api::V1::User::UsersController < Api::V1::User::HeaderController
   end
 
   def sign_out
-    # @current_user.generate_auth_token(true)
-    # @current_user.save
-    # render json: { success: true }
   end
 
   def manage_user
-    render json: { success: true, user: @current_user.as_json }
+    render json: { success: true, user: @current_user.as_json_for_manage }
   end
 
   def get_user

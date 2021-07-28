@@ -10,8 +10,9 @@ class Api::V1::User::FictionsController < Api::V1::User::HeaderController
     end
 
     def manage_fiction
-        @fictionuser = Fiction.where(user_id: @current_user)
-        render json: @fictionuser.as_json, 
+        @fictionwhere = Fiction.where(user_id: @current_user)
+        @fictionone = @fictionwhere.order("created_at DESC")
+        render json: @fictionone,
         include: [{ user: { only: :username } }, category: { only: :name }]
     end
 

@@ -69,8 +69,18 @@ class User < ApplicationRecord
     json
   end
 
+  def as_json_for_manage
+    json = {}
+    json[:email] = self.email
+    json[:username] = self.username
+    json[:bio] = self.bio
+    json[:image_url] = self.image_url
+    json
+  end
+
   def as_profile_json
     json = {}
+    json[:id] = self.id
     json[:username] = self.username
     json
   end
