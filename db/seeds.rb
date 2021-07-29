@@ -91,3 +91,13 @@ reviews = Review.create!([
     user_id: User.last.id,
     fiction_id: Fiction.first.id
 ])
+
+reviews = Review.create!([
+    title: "Hello Title",
+    description: "Not Bad",
+    score: "5",
+    user_id: User.last.id,
+    fiction_id: Fiction.second.id
+])
+
+
