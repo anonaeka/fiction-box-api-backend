@@ -25,7 +25,7 @@
 class Fiction < ApplicationRecord
   belongs_to :user
   belongs_to :category
-
+  has_many :reviews
   validates :name, presence: true, uniqueness: true
   validates :description, presence: true
   validates :article, presence: true

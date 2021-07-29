@@ -18,7 +18,7 @@ class Api::V1::User::FictionsController < Api::V1::User::HeaderController
 
     def show
         render json: @fiction, 
-        include: [{ user: { only: :username } }, category: { only: :name }]
+        include: [{ user: { only: :username } }, category: { only: :name }, reviews: {only: [:title, :description, :score]}]
     end
 
     def create

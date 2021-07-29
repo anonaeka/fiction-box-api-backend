@@ -4,9 +4,8 @@ class Api::V1::User::ReviewsController < Api::V1::User::HeaderController
     before_action :control_reviews, only: [:update, :destroy]
 
     def index
-        # render json: Review.order(created_at: :desc),
-        # include: [{ user: { only: :username } }, fiction: { only: :name }]
-        render status: :not_implemented
+        render json: Review.order(created_at: :desc),
+        include: [{ user: { only: :username } }, fiction: { only: :name }]
     end
 
     def show
