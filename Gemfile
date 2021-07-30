@@ -47,3 +47,5 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem 'jwt'
 
 gem 'devise'
+
+gem "rspec-rails", "~> 5.0"
